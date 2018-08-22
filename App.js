@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { viroKey } from './config'
+import { Map } from './js/Map'
 import {
   AppRegistry,
   ActivityIndicator,
@@ -127,14 +128,12 @@ export default class ViroSample extends Component {
   render() {
     return (
       <View style={localStyles.outer} >
-      {/* {renderIf(!this.state.isLoggedIn,
+       {renderIf(!this.state.isLoggedIn,
         <View>
       
-        <TouchableOpacity onPress={()=> this.setState({isLoggedIn: true})}>
-          <Image source={require("./js/GoogleButton.png")}/>
-        </TouchableOpacity>
+        <Map/>
         </View>
-      )} */}
+      )} 
 
       {renderIf(this.state.posPhone,
         <View>
