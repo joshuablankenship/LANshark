@@ -22,7 +22,7 @@ export default class Signup extends Component {
   // Open URL in a browser
 
   loggingIn = () => {
-    axios.post('http://172.24.6.45:8200/login')
+    axios.post('http://ec2-34-238-240-14.compute-1.amazonaws.com:8200/login')
     .then((data) => alert(data))
     .catch((e) => alert(e))
   }
