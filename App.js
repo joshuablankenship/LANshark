@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
-import { viroKey } from './config'
+import axios from 'axios';
 import {
-  AppRegistry,
   ActivityIndicator,
   Text,
   View,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity,
   Image,
-  WebView,
   Alert,
 } from 'react-native';
-import Signup from './js/Signup'
-
-import axios from 'axios'
-
+import Signup from './js/Signup';
+import Map from './js/Map';
+import { viroKey } from './config';
 
 import {
   ViroARScene,
@@ -125,38 +121,51 @@ export default class ViroSample extends Component {
       narrowData: textArray2,
       dataStore: null,
       isLoggedIn: false,
-      mapView: true
+      mapView: false,
     }
   }
 
   render() {
     return (
       <View style={localStyles.outer} >
-      {renderIf(!this.state.isLoggedIn,
+      {renderIf(this.state.isLoggedIn,
         <View style={styles.login}>
           <Signup logIn={this.logIn} />
         </View>
       )}
-      {renderIf(this.state.posPhone && this.state.isLoggedIn,
+      {renderIf(this.state.mapView,
+        <View style = {styles.container}>
+        <WebView
+           source = {{ uri: 
+            'https://query.wikidata.org/embed.html#%23defaultView%3AMap%7B%22layer%22%3A%22%3Finstance_ofLabel%22%7D%0ASELECT%20%3Fplace%20%3FplaceLabel%20%3Fimage%20%3Fcoordinate_location%20%3Fdist%20%3Finstance_of%20%3Finstance_ofLabel%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Aaround%20%7B%0A%20%20%20%20%3Fplace%20wdt%3AP625%20%3Fcoordinate_location.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Acenter%20%22Point%28-90.08422%2029.92878%29%22%5E%5Egeo%3AwktLiteral.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Aradius%20%221%22.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Adistance%20%3Fdist.%0A%20%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP18%20%3Fimage.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP31%20%3Finstance_of.%20%7D%0A%7D'
+            }}
+            scalesPageToFit={true}
+            onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest} //for iOS
+            onNavigationStateChange={this.onShouldStartLoadWithRequest} //for Android
+          />
+          {/* <Button title="AR View" onPress={this.changeView}></Button> */}
+        </View>
+      )}
+      {renderIf(this.state.posPhone && this.state.isLoggedIn && !this.state.mapView,
         <View>
         <Text>Sorry your phone sucks! heres some data for you anyway{this.state.generalData[dataCounter]}</Text>
       </View>
       )}
-       {renderIf(this.state.posComp && !this.state.posPhone && this.state.isLoggedIn,
+       {renderIf(this.state.posComp && !this.state.posPhone && this.state.isLoggedIn && !this.state.mapView,
         <ViroARSceneNavigator style={localStyles.arView} apiKey={viroKey}
           initialScene={{scene:InitialARScene, passProps:{displayObject:this.state.displayObject}}} ref="scene" viroAppProps={this.state.viroAppProps}
         />
        )}
-        {renderIf(this.state.isLoggedIn,
+        {renderIf(this.state.isLoggedIn && !this.state.mapView,
         this._renderTrackingText()
         )}
 
-        {renderIf(this.state.isLoading && this.state.isLoggedIn,
+        {renderIf(this.state.isLoading && this.state.isLoggedIn && !this.state.mapView,
           <View style={{position:'absolute', left:0, right:0, top:0, bottom:0,  justifyContent:'center'}}>
             <ActivityIndicator size='large' animating={this.state.isLoading} color='#ffffff'/>
           </View>)
         }
-        {renderIf (this.state.isLoggedIn,
+        {renderIf (this.state.isLoggedIn && !this.state.mapView,
         <View style={{position: 'absolute',  left: 50, right: 0, bottom: 77, alignItems: 'center',flex: 1, flexDirection: 'row', justifyContent: 'space-between',}}>
         <TouchableHighlight style={localStyles.buttons}
             onPress={() => this._onShowText3(0, dataCounter, 0)}           
@@ -373,6 +382,9 @@ var localStyles = StyleSheet.create({
   arView: {
     flex:1,
   },
+  container: {
+    flex:1,
+  },
   buttons : {
     height: 80,
     width: 80,
@@ -412,11 +424,6 @@ ViroMaterials.createMaterials({
 });
 //"Comic Sans MS", cursive, sans-serif
 var styles = StyleSheet.create({
-<<<<<<< HEAD
-  container: {
-    flex:1,
- },
-=======
   login: {
     flex: 1,
     justifyContent: 'center',
@@ -424,7 +431,6 @@ var styles = StyleSheet.create({
     paddingLeft: 60,
     paddingRight: 60,
   },
->>>>>>> 1887af6e1aae603be749c50582eea71d98cb4d7e
   helloWorldTextStyle: {
     fontFamily: 'Roboto',
     // fontStyle: 'italic',
