@@ -9,6 +9,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Image,
+  WebView,
   Alert,
 } from 'react-native';
 import Login from './js/Login'
@@ -30,7 +31,7 @@ import renderIf from './js/helpers/renderIf';
 
 var InitialARScene = require('./js/ARHist');
 var isARSupportedOnDevice = ViroUtils.isARSupportedOnDevice;
-
+let url = 'https://query.wikidata.org/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3E%0APREFIX%20geo%3A%20%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23%3E%0A%23defaultView%3AMap%7B%22layer%22%3A%22%3Finstance_ofLabel%22%7D%0ASELECT%20%3Fplace%20%3FplaceLabel%20%3Fimage%20%3Fcoordinate_location%20%3Fdist%20%20%3Finstance_ofLabel%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Aaround%20%7B%0A%20%20%20%20%3Fplace%20wdt%3AP625%20%3Fcoordinate_location.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Acenter%20%22Point(-90.08422%2029.92878)%22%5E%5Egeo%3AwktLiteral.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Aradius%20%221%22.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Adistance%20%3Fdist.%0A%20%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP18%20%3Fimage.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP31%20%3Finstance_of.%20%7D%0A%7D';
 
 // var textArray = [
 //   'Testing how to',
@@ -124,6 +125,7 @@ export default class ViroSample extends Component {
       narrowData: textArray2,
       dataStore: null,
       isLoggedIn: false,
+      mapView: true
     }
   }
 
@@ -131,8 +133,19 @@ export default class ViroSample extends Component {
     return (
       <View style={localStyles.outer} >
       {renderIf(!this.state.isLoggedIn,
-        <View>
-          <Login logIn={this.logIn} />
+      
+        // <View>
+        //   <Login logIn={this.logIn} />
+        // </View>
+        <View style = {styles.container}>
+        <WebView
+           source = {{ uri: 
+            'https://query.wikidata.org/embed.html#%23defaultView%3AMap%7B%22layer%22%3A%22%3Finstance_ofLabel%22%7D%0ASELECT%20%3Fplace%20%3FplaceLabel%20%3Fimage%20%3Fcoordinate_location%20%3Fdist%20%3Finstance_of%20%3Finstance_ofLabel%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Aaround%20%7B%0A%20%20%20%20%3Fplace%20wdt%3AP625%20%3Fcoordinate_location.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Acenter%20%22Point%28-90.08422%2029.92878%29%22%5E%5Egeo%3AwktLiteral.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Aradius%20%221%22.%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Adistance%20%3Fdist.%0A%20%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP18%20%3Fimage.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fplace%20wdt%3AP31%20%3Finstance_of.%20%7D%0A%7D'
+            }}
+            scalesPageToFit={true}
+            onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest} //for iOS
+            onNavigationStateChange={this.onShouldStartLoadWithRequest} //for Android
+          />
         </View>
       )}
       {renderIf(this.state.posPhone && this.state.isLoggedIn,
@@ -402,6 +415,9 @@ ViroMaterials.createMaterials({
 });
 //"Comic Sans MS", cursive, sans-serif
 var styles = StyleSheet.create({
+  container: {
+    flex:1,
+ },
   helloWorldTextStyle: {
     fontFamily: 'Roboto',
     // fontStyle: 'italic',
