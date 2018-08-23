@@ -7,7 +7,8 @@ import {
   Text,
   Button,
   TouchableOpacity,
-  View
+  View,
+  WebView,
 } from 'react-native';
 import axios from 'axios';
 
