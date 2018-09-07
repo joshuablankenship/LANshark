@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 # AR History Tour
 Use augmented reality to discover facts about your city.
@@ -80,4 +79,4 @@ Big thanks to The Wikimedia Foundation, ViroReact, and Opspark
 Thesis Project
 ## <a name="tech-stack"></a>Tech Stack
 ![techstack](/images/techstack.png)
->>>>>>> cd56892cfdac80a429260352df14fa7116d6a59f
+
